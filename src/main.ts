@@ -1,11 +1,11 @@
-type SignalGetter<T> = () => T;
-type SignalSetter<T> = (newValue: T) => void;
+const SYMBOL_MUT = Symbol("MUTABLE");
+const SYMBOL_READONLY = Symbol("READONLY");
 
-type Signal<T> = SignalGetter<T> &
-  SignalSetter<T> & {
-    get: SignalGetter<T>;
-    set: SignalSetter<T>;
-  };
+type DerivedSignal<T extends object> = T & { [SYMBOL_READONLY]: true };
+type DerivedPrimitiveSignal<T> = DerivedSignal<{ value: T }>;
+
+type MutSignal<T extends object> = T & { [SYMBOL_MUT]: true };
+type MutPrimitiveSignal<T> = MutSignal<{ value: T }>
 
 type RunningEffect = () => void;
 
