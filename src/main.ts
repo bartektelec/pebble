@@ -45,6 +45,29 @@ const $ = <T>(value: T): Signal<T> => {
   return result;
 };
 
+const proxified = <T>(input: T) => {
+  const subs: RunningEffect[] = [];
+
+  return new Proxy<T>(input, {
+    get(target, p, receiver) {
+      const fx = runningFx;
+      if (fx) {
+        subs.push(fx);
+      };
+      return Reflect.get(target, p, receiver);
+    },
+    set(target, p, newValue) {
+      const old = Reflect.get(target, p);
+      const changed = Reflect.set(target, p, newValue);
+      if (old === changed) return old;
+
+      subs.forEach(fx => fx());
+
+      return changed;
+    }
+  })
+}
+
 const effect = (cb: RunningEffect) => {
   runningFx = cb;
   cb();
@@ -52,12 +75,12 @@ const effect = (cb: RunningEffect) => {
 };
 
 
-const count = $(0);
+const count = proxified({ value: 0 });
 
-effect(() => document.body.innerText = count().toString());
+effect(() => document.body.innerText = count.value.toString());
 
 document.body.onclick = () => {
-  count.set(count() + 1);
+  count.value++;
 }
 
 
