@@ -1,20 +1,30 @@
 import { ctx } from "./ctx";
 
-const { $signal, $effect } = ctx();
+const { $signal, $computed, $bind, $text, $attr, $class } =
+  ctx();
 
-const counter = $signal(0);
-const multiplier = $signal(1);
+const a = $signal(1);
+const b = $signal(1);
+const result = $computed(() => a.value * b.value);
 
-$effect(() => {
-  document.body.textContent = `Adding ${
-    multiplier.value
-  } each second = ${counter.value.toString()}`;
-});
+document.body.innerHTML = `
+<input id='a' type='number' />
+<input id='b' type='number' />
+<div id='result'></div>
+`;
 
-document.body.onclick = () => {
-  multiplier.value *= 2;
-};
+const aEl = document.querySelector<HTMLInputElement>("#a");
+const bEl = document.querySelector<HTMLInputElement>("#b");
+const resEl =
+  document.querySelector<HTMLInputElement>("#result");
 
-setInterval(() => {
-  counter.value += multiplier.value;
-}, 1000);
+$bind(aEl!, "value", a, "value");
+$bind(bEl!, "value", b, "value");
+$text(
+  resEl!,
+  () =>
+    `we combine ${a.value} with ${b.value} and get ${result.value}`,
+);
+
+$class(resEl!, "bg-red-500", () => a.value > 10);
+$attr(resEl!, "disabled", () => String(a.value > 15));

@@ -11,10 +11,9 @@ export const computed =
       state.value = fx();
     });
 
-    // @ts-expect-error this is fine
     return new Proxy(state, {
       set() {
         return false;
       },
-    });
+    }) as ReadSignal<T>;
   };
