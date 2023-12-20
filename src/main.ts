@@ -1,30 +1,71 @@
-import { ctx } from "./ctx";
+import { ctx } from "./signals/ctx";
 
-const { $signal, $computed, $bind, $text, $attr, $class } =
-  ctx();
+const {
+  $signal,
+  $computed,
+  $bind,
+  $text,
+  $effect,
+  $attr,
+  $class,
+  $if,
+  $html,
+  $each,
+} = ctx();
 
-const a = $signal(1);
-const b = $signal(1);
-const result = $computed(() => a.value * b.value);
-
+// Create DOM Nodes
 document.body.innerHTML = `
-<input id='a' type='number' />
-<input id='b' type='number' />
-<div id='result'></div>
-`;
+<input type='text' id="todo-text"/>
+<button type="button" id="add-button">Add</button>
+<div id="todo-list"></div>`;
 
-const aEl = document.querySelector<HTMLInputElement>("#a");
-const bEl = document.querySelector<HTMLInputElement>("#b");
-const resEl =
-  document.querySelector<HTMLInputElement>("#result");
+// Grab references to DOM nodes
+const [inputRef, btnRef, listRef] = (
+  ["#todo-text", "#add-button", "#todo-list"] as const
+).map((x) => document.querySelector(x) as HTMLElement);
 
-$bind(aEl!, "value", a, "value");
-$bind(bEl!, "value", b, "value");
-$text(
-  resEl!,
-  () =>
-    `we combine ${a.value} with ${b.value} and get ${result.value}`,
+type Todo = {
+  title: string;
+  checked: boolean;
+};
+
+// Declare application state
+const todos = $signal<Todo[]>([]);
+const current = $signal("");
+const addTodo = () => {
+  const newTodo = {
+    title: current.value,
+    checked: false,
+  };
+
+  todos.push(newTodo);
+  current.value = "";
+};
+
+// Assign state and event handlers to DOM nodes
+$bind(inputRef as HTMLInputElement, "value", current, "value");
+btnRef!.onclick = addTodo;
+
+const elements = $each(
+  () => todos,
+  (t) => `<li>Title: ${t.title}</li>`,
 );
 
-$class(resEl!, "bg-red-500", () => a.value > 10);
-$attr(resEl!, "disabled", () => String(a.value > 15));
+const conditionalText = $if(
+  () => todos.length >= 5,
+  "Wow list is getting long man",
+  "Not long list",
+);
+
+const cond = $if;
+
+$html(
+  listRef!,
+  () => `
+<p>Here is your list</p>
+${conditionalText.value}
+<ul>
+${elements.value.join("")}
+</ul>
+`,
+);

@@ -1,6 +1,5 @@
-import { effect } from "./effect";
 import { prop } from "./prop";
-import { CtxInternal, MutSignal } from "./types";
+import { MutSignal } from "../signals/types";
 
 /**
  * bind is a method used to two-way bind a signal value to a HTML element
@@ -22,6 +21,7 @@ export const bind =
     if (element instanceof HTMLInputElement) {
       $prop(element, property, () => signal[signalProp]);
 
+      // TODO: handle all cases
       element.addEventListener("change", (e) => {
         signal[signalProp] = e.target[property];
       });

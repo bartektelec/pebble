@@ -1,4 +1,4 @@
-import { effect } from "./effect";
+import { effect } from "../signals/effect";
 
 /**
  * classname is a method used to one-way bind a signal value to a HTMLElement classes using a conditional check

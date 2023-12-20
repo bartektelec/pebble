@@ -1,5 +1,4 @@
-import { effect } from "./effect";
-
+import { effect } from "../signals/effect";
 /**
  * prop is a method used to one-way bind a signal value to a HTMLElement property using a conditional check
  */

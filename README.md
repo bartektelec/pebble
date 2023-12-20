@@ -9,6 +9,7 @@ The goal is to create a _modular_ implementation of fine-grained signals that ca
 - [x] recursively proxify objects
 - [x] optimize to only notify object signal subscribers about which key has been updated (and array indecies)
 - [x] overload mutation functions like .push to notify subscribers
-- [ ] implement two-way binding helpers for HTML elements to bind signals to their values
-- [ ] implement QOF helpers for inserting signals in templates as textContent and class names?? (maybe different package)
+- [x] implement two-way binding helpers for HTML elements to bind signals to their values
+- [x] implement QOF helpers for inserting signals in templates as textContent and class names?? (maybe different package)
+- [ ] implement if block that only takes care of partial template changes
 - [ ] implement a "each block" that keeps track of atomic changes

@@ -1,12 +1,15 @@
 import { CtxInternal } from "./types";
-import { bind } from "./bind";
-import { classname } from "./classname";
+import { bind } from "../dom/bind";
+import { classname } from "../dom/classname";
 import { computed } from "./computed";
 import { effect } from "./effect";
 import { mut } from "./mutable";
-import { attr } from "./attr";
-import { text } from "./text";
-import { prop } from "./prop";
+import { attr } from "../dom/attr";
+import { text } from "../dom/text";
+import { prop } from "../dom/prop";
+import { ifBlock } from "../dom/if";
+import { html } from "../dom/html";
+import { each } from "../dom/each";
 
 /**
  * Context is a wrapper around an app or a piece of logic that acts as a
@@ -28,6 +31,9 @@ export const ctx = (debug = false) => {
   const $class = classname($effect);
   const $attr = attr($effect);
   const $prop = prop($effect);
+  const $if = ifBlock($effect, $computed);
+  const $html = html($effect);
+  const $each = each($computed);
 
   const $bind = bind($prop);
 
@@ -40,5 +46,8 @@ export const ctx = (debug = false) => {
     $class,
     $attr,
     $prop,
+    $if,
+    $html,
+    $each,
   };
 };

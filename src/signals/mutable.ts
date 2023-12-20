@@ -1,3 +1,4 @@
+import { is_proxifyable } from "./is_proxifiable";
 import {
   CtxInternal,
   CtxEffect,
@@ -8,9 +9,6 @@ import {
 
 const is_key = (target: object, p: string | symbol) =>
   Object.keys(target).includes(p as string);
-
-const is_proxifyable = (input: unknown) =>
-  typeof input === "object" && input !== null;
 
 const recur_proxify =
   (ctx: CtxInternal) =>
@@ -57,7 +55,7 @@ export const mut =
         let _val = newValue;
 
         if (old === undefined && is_proxifyable(newValue)) {
-          _val = recur_proxify(newValue);
+          _val = recur_proxify(ctx)(newValue);
         }
 
         const changed = Reflect.set(target, p, _val);
