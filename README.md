@@ -2,12 +2,12 @@
 
 The goal is to create a _modular_ implementation of fine-grained signals that can be used regardless of used framework (or vanilla JS).
 
-- [X] simplest implementation
-- [X] use proxies for a better API
+- [x] simplest implementation
+- [x] use proxies for a better API
 - [ ] split to derived/readonly and mutable signals
-- [ ] split implementation for Primitive and Object Signals???
+- [x] split implementation for Primitive and Object Signals???
 - [ ] recursively proxify objects
-- [ ] optimize to only notify object signal subscribers about which key has been updated (and array indecies)
+- [x] optimize to only notify object signal subscribers about which key has been updated (and array indecies)
 - [ ] overload mutation functions like .push to notify subscribers
 - [ ] implement two-way binding helpers for HTML elements to bind signals to their values
 - [ ] implement QOF helpers for inserting signals in templates as textContent and class names?? (maybe different package)
