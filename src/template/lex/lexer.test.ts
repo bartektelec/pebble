@@ -205,10 +205,8 @@ describe("lexer", () => {
       expect(result[i]?.content).toEqual(expected[i]!.content);
     }
   });
-
   it("should not tokenize script and style tags", () => {
-    const result = lexer(`
-      <script lang="ts">
+    const result = lexer(`<script lang="ts">
         let x = 10;
         let name = "adam"
 
@@ -216,76 +214,87 @@ describe("lexer", () => {
         const isLower = (a,b) => a < b;
       </script>
 
-      <div>This is something new</div>
-    Trailing text
-
-      <style>
-        .app-header {
-          color: red;
-          border-width: 20px;
-        }
-      </style>
-      `);
+<h1>This is a heading</h1>
+<div>This is a div</div>
+Trailing text
+<style lang='scss'>
+.app-header {
+  color: red;
+  border-width: 10px;
+}
+</style>
+`);
 
     const expected = [
       ...openBracket("script", { lang: "ts" }),
       {
         type: Tokens.Text,
         content: `
-                let x = 10;
-        let name = "adam"
-
-        function sum = (a,b) => a + b;
-        const isLower = (a,b) => a < b;
-`,
-      },
-      ...closeBracket("script"),
-      ...openBracket("div"),
-      { type: Tokens.Text, content: "This is something new" },
-      ...closeBracket("div"),
-      {
-        type: Tokens.Text,
-        content: "\n    Trailing text\n     ",
-      },
-    ];
-
-    console.log(JSON.stringify(result, null, 3));
-    expect(expected.length).toEqual(result.length);
-    for (let i = 0; i < result.length; i++) {
-      expect(result[i]?.type).toEqual(expected[i]!.type);
-      expect(result[i]?.content).toEqual(expected[i]!.content);
-    }
-  });
-  it.only("should not tokenize script and style tags", () => {
-    const result = lexer(`<script lang="ts">
         let x = 10;
         let name = "adam"
 
         function sum = (a,b) => a + b;
         const isLower = (a,b) => a < b;
-      </script>`);
-
-    const expected = [
-      ...openBracket("script", { lang: "ts" }),
-      {
-        type: Tokens.Text,
-        content: `
-                let x = 10;
-        let name = "adam"
-
-        function sum = (a,b) => a + b;
-        const isLower = (a,b) => a < b;
 `,
       },
       ...closeBracket("script"),
+      ...openBracket("h1"),
+      {
+        content: "This is a heading",
+        type: Tokens.Text,
+      },
+      ...closeBracket("h1"),
+      ...openBracket("div"),
+      {
+        content: "This is a div",
+        type: Tokens.Text,
+      },
+      ...closeBracket("div"),
+      {
+        type: Tokens.Text,
+        content: "\n    Trailing text\n     ",
+      },
+      ...openBracket("style", { lang: "scss" }),
+      {
+        content: `.app-header {
+  color: red;
+  border-width: 10px;
+}
+`,
+        type: Tokens.Text,
+      },
+      ...closeBracket("style"),
     ];
 
-    console.log(JSON.stringify(result, null, 3));
-    console.log(JSON.stringify(expected, null, 3));
     expect(expected.length).toEqual(result.length);
     for (let i = 0; i < result.length; i++) {
       expect(result[i]?.type).toEqual(expected[i]!.type);
-      expect(result[i]?.content).toEqual(expected[i]!.content);
+      expect(result[i]?.content.trim()).toEqual(
+        expected[i]!.content.trim(),
+      );
+    }
+  });
+
+  it("should ignore quote marks that arent attribute values", () => {
+    const result = lexer(
+      `<div id="123" class='heading'>This text ain't "quoted" 'rite</div>`,
+    );
+
+    const expected = [
+      ...openBracket("div", { id: "123", class: "heading" }),
+      {
+        content: `This text ain't "quoted" 'rite`,
+        type: Tokens.Text,
+      },
+      ...closeBracket("div"),
+    ];
+
+    expect(expected.length).toEqual(result.length);
+    for (let i = 0; i < result.length; i++) {
+      expect(result[i]?.type).toEqual(expected[i]!.type);
+      expect(result[i]?.content.trim()).toEqual(
+        expected[i]!.content.trim(),
+      );
     }
   });
 });

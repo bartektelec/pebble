@@ -4,35 +4,11 @@
  */
 
 import { ValueOf } from "../../common/valueof";
-
-export const Tokens = {
-  None: Symbol("none"),
-  Lt: Symbol("lt"),
-  Gt: Symbol("Gt"),
-  Slash: Symbol("slash"),
-  Ident: Symbol("ident"),
-  String: Symbol("string"),
-  Eq: Symbol("eq"),
-  LCurl: Symbol("lcurl"),
-  RCurl: Symbol("rcurl"),
-  Text: Symbol("text"),
-  Excl: Symbol("exclamation"),
-  Illegal: Symbol("illegal"),
-} as const;
-
-type LexToken = {
-  type: ValueOf<typeof Tokens>;
-  content: string;
-};
+import { LexToken, Tokens } from "../types";
 
 const is_whitespace = (ch: string) => {
-  console.log("checking whitespace for :", ch, '"');
   if ([" ", "\t", "\n"].includes(ch)) return true;
   return false;
-};
-
-const is_newline_or_tab = (ch: string) => {
-  return ch === "\n" || ch === "\t";
 };
 
 const is_letter = (ch: string) => {
@@ -40,7 +16,6 @@ const is_letter = (ch: string) => {
 };
 
 const is_ident_char = (ch: string) => {
-  console.log("from is ident, :", ch);
   if (is_whitespace(ch)) return false;
   if (ch === "=") return false;
   if (ch === '"') return false;
@@ -49,12 +24,6 @@ const is_ident_char = (ch: string) => {
 
   return true;
 };
-
-const str_from_to = (
-  str: string,
-  from: number,
-  to: number,
-) => {};
 
 export const lexer = (input: string): LexToken[] => {
   const result: LexToken[] = [];
@@ -76,14 +45,8 @@ export const lexer = (input: string): LexToken[] => {
     return input[pos - 1]!;
   };
 
-  const peek_next = () => {
-    if (pos + 1 >= input.length) return "";
-    return input[pos + 1]!;
-  };
-
   const read_ident = () => {
     let from = pos;
-    console.log("read ident", get_ch());
     next_char();
 
     while (is_ident_char(get_ch())) {
@@ -97,10 +60,9 @@ export const lexer = (input: string): LexToken[] => {
 
   const read_string = () => {
     let from = pos;
-    console.log("read string", get_ch());
     next_char();
 
-    while (!finished() && get_ch() !== '"') {
+    while (!finished() && !['"', "'"].includes(get_ch())) {
       next_char();
     }
 
@@ -128,7 +90,6 @@ export const lexer = (input: string): LexToken[] => {
     let output = "";
     if (finished()) return "";
     const exitTag = `</${closing_tag}`;
-    console.log("exit tag is ", exitTag);
 
     next_char();
 
@@ -136,11 +97,12 @@ export const lexer = (input: string): LexToken[] => {
       output += get_ch();
       if (output.toLowerCase().endsWith(exitTag.toLowerCase()))
         break;
+
       next_char();
     }
-    // pos--;
 
-    pos -= exitTag.length + 1;
+    pos -= exitTag.length;
+    in_script_or_style_tag = null;
 
     return output.slice(0, -exitTag.length);
   };
@@ -170,7 +132,6 @@ export const lexer = (input: string): LexToken[] => {
     };
 
     const ch = get_ch();
-    console.log('scanning letter: "', ch, '".');
 
     switch (ch) {
       case "=":
@@ -206,6 +167,7 @@ export const lexer = (input: string): LexToken[] => {
       token.type = Tokens.Ident;
       token.content = read_ident();
     }
+
     if (in_tag_braces && is_script_or_style_tag(token)) {
       if (in_closing_tag) {
         in_script_or_style_tag = null;
@@ -214,8 +176,8 @@ export const lexer = (input: string): LexToken[] => {
           token.content as typeof in_script_or_style_tag;
       }
     }
-    //
-    if (ch === '"') {
+
+    if (ch === '"' || ch === "'") {
       token.type = Tokens.String;
       token.content = read_string();
     }
@@ -232,7 +194,11 @@ export const lexer = (input: string): LexToken[] => {
       if (!token.content.trim()) return;
     }
 
-    if (in_script_or_style_tag && !in_tag_braces) {
+    if (
+      token.type === Tokens.Illegal &&
+      in_script_or_style_tag &&
+      !in_tag_braces
+    ) {
       token.type = Tokens.Text;
       token.content = read_until_closed_with(
         in_script_or_style_tag,
@@ -247,17 +213,6 @@ export const lexer = (input: string): LexToken[] => {
 
     next_token();
   }
-
-  const read_word = () => {
-    let from = pos;
-    next_char();
-
-    while (!is_whitespace(get_ch())) {
-      next_char();
-    }
-
-    return input.slice(from, pos);
-  };
 
   return result;
 };
