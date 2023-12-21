@@ -69,3 +69,11 @@ ${elements.value.join("")}
 </ul>
 `,
 );
+
+const h = (temp: string) => console.log(temp);
+
+h(`
+<div>This is a test: {count}</div>
+<input type="number" bind:value={count}/>
+<button onclick={() => count.value *= 2}>Click</button>
+`);
