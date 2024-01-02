@@ -11,5 +11,10 @@ The goal is to create a _modular_ implementation of fine-grained signals that ca
 - [x] overload mutation functions like .push to notify subscribers
 - [x] implement two-way binding helpers for HTML elements to bind signals to their values
 - [x] implement QOF helpers for inserting signals in templates as textContent and class names?? (maybe different package)
+- [ ] implement a fragment element that unwraps around a parent
 - [ ] implement if block that only takes care of partial template changes
 - [ ] implement a "each block" that keeps track of atomic changes
+
+# NOTES
+
+In order to make the each block react to each index instead of whole object change, the fragment element needs to be created, then each child of that fragment will need to be bound to an atomic signal change, possibly performing a check on a computed signal output could help memoizing the state instead of always forcing a render
