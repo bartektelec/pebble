@@ -1,0 +1,39 @@
+<style>
+  .header {
+    color: red;
+  }
+</style>
+
+<script>
+  type Props = {
+    name: string;
+  }
+
+    const counter = signal(0);
+    const doubled = derived(() => counter * 2);
+
+    const inc = () => {
+      counter.value++;
+    }
+
+
+  export default (props: Props) => {
+    const nameLength = signal(props.name.length);
+    const doubled = derived(() => counter * 2);
+
+
+  }
+</script>
+
+<script>
+  export default class {
+    constructor(props) {
+      this.counter = signal(0);
+      this.doubled = derived(() => this.counter * 1);
+    }
+
+    add() {
+      this.counter++;
+    }
+  }
+</script>

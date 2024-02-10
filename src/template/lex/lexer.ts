@@ -3,7 +3,6 @@
  * it should not do more than needed to build a new DOM tree
  */
 
-import { ValueOf } from "../../common/valueof";
 import { LexToken, Tokens } from "../types";
 
 const is_whitespace = (ch: string) => {

@@ -1,4 +1,5 @@
-import { lexer, Tokens } from "./lexer";
+import { Tokens } from "../types";
+import { lexer } from "./lexer";
 
 const openBracket = (
   bracketName: string,

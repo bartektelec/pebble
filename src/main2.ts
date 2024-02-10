@@ -44,7 +44,8 @@ const templ = `
 </body>
 `;
 
-const change = (
+const parser = new DOMParser();
+const enhance = (
   components: Record<string, typeof HTMLElement>,
   domstring: string,
 ) => {
@@ -55,15 +56,19 @@ const change = (
   //
   // })
   //
+
+  const html = parser.parseFromString(templ, "application/xml");
+  console.log(html);
+
   Object.entries(components).forEach(([k, v]) => {
-    customElements.define(`app-${k}`, v);
+    console.log(html.body.querySelectorAll(k));
+    customElements.define(`app-${k.toLowerCase()}`, v);
   });
 };
 
-change(components, templ);
+enhance(components, templ);
 
-const parser = new DOMParser();
-const html = parser.parseFromString(templ, "text/html");
-
-console.log(html);
-document.body.innerHTML = html.body.innerHTML;
+// const html = parser.parseFromString(templ, "text/html");
+//
+// console.log(html);
+// document.body.innerHTML = html.body.innerHTML;
