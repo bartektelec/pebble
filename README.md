@@ -14,6 +14,8 @@ The goal is to create a _modular_ implementation of fine-grained signals that ca
 - [ ] implement a fragment element that unwraps around a parent
 - [ ] implement if block that only takes care of partial template changes
 - [ ] implement a "each block" that keeps track of atomic changes
+- [ ] traverse ast to perform binding logic on each node
+- [ ] walk ast to assign unique static IDs to each element that can be bound with generated JS script
 
 # NOTES
 
