@@ -11,9 +11,11 @@ The goal is to create a _modular_ implementation of fine-grained signals that ca
 - [x] overload mutation functions like .push to notify subscribers
 - [x] implement two-way binding helpers for HTML elements to bind signals to their values
 - [x] implement QOF helpers for inserting signals in templates as textContent and class names?? (maybe different package)
+- [ ] parsing untokenized tags (script and style) leaves a trailing comma
 - [ ] implement a fragment element that unwraps around a parent
 - [ ] implement if block that only takes care of partial template changes
 - [ ] implement a "each block" that keeps track of atomic changes
+- [ ] add support for slots
 - [ ] traverse ast to perform binding logic on each node
 - [ ] walk ast to assign unique static IDs to each element that can be bound with generated JS script
 
