@@ -51,15 +51,15 @@ const [inputRef, btnRef, listRef] = (
 ).map((x) => document.querySelector(x) as HTMLElement);
 
 // Render each list item
-$html(
-  listRef!,
-  () => `
-    <p>Here is your list</p>
-    <ul>
-      ${elements.value.join("")}
-    </ul>
-  `,
-);
+// $html(
+//   listRef!,
+//   () => `
+//     <p>Here is your list</p>
+//     <ul>
+//       ${elements.value.join("")}
+//     </ul>
+//   `,
+// );
 // -------------------- COMBINE SIGNALS WITH DOM NODES --------------------
 
 $bindInput(inputRef!, current); // two-way bind signal with input value

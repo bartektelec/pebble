@@ -19,10 +19,12 @@ export const bind =
     signalProp: KS,
   ) => {
     if (element instanceof HTMLInputElement) {
+      // @ts-expect-error ??
       $prop(element, property, () => signal[signalProp]);
 
       // TODO: handle all cases
       element.addEventListener("change", (e) => {
+        // @ts-expect-error ??
         signal[signalProp] = e.target[property];
       });
     }
