@@ -58,10 +58,8 @@ const enhance = (
   //
 
   const html = parser.parseFromString(templ, "application/xml");
-  console.log(html);
 
   Object.entries(components).forEach(([k, v]) => {
-    console.log(html.body.querySelectorAll(k));
     customElements.define(`app-${k.toLowerCase()}`, v);
   });
 };
@@ -70,5 +68,4 @@ enhance(components, templ);
 
 // const html = parser.parseFromString(templ, "text/html");
 //
-// console.log(html);
 // document.body.innerHTML = html.body.innerHTML;

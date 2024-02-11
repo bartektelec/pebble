@@ -11,7 +11,7 @@ export const NodeTypes = {
 
 export type ASTChildNode = ASTNode | string;
 
-class ASTNode {
+export class ASTNode {
   attributes: Record<string, string>;
   children: (ASTNode | string)[];
   private attr_name: string = "";
@@ -34,11 +34,6 @@ class ASTNode {
   attr(str: string) {
     this.attr_name = str;
 
-    return this;
-  }
-
-  attr_eq() {
-    // this.attr_name += "=";
     return this;
   }
 

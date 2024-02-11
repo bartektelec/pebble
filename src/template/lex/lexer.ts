@@ -28,7 +28,7 @@ export const lexer = (input: string): LexToken[] => {
   const result: LexToken[] = [];
 
   let pos = -1;
-  let finished = () => pos == input.length - 1;
+  let finished = () => pos == input.length;
   let get_ch = () => input[pos]!;
   let in_tag_braces = false;
   let in_closing_tag = false;

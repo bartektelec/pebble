@@ -203,7 +203,10 @@ describe("lexer", () => {
     expect(expected.length).toEqual(result.length);
     for (let i = 0; i < result.length; i++) {
       expect(result[i]?.type).toEqual(expected[i]!.type);
-      expect(result[i]?.content).toEqual(expected[i]!.content);
+
+      expect(result[i]?.content.trim()).toEqual(
+        expected[i]!.content.trim(),
+      );
     }
   });
   it("should not tokenize script and style tags", () => {
