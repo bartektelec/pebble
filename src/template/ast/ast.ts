@@ -14,6 +14,7 @@ export type ASTChildNode = ASTNode | string;
 export class ASTNode {
   attributes: Record<string, string>;
   children: (ASTNode | string)[];
+  escaped_attributes: Record<string, string>;
   private attr_name: string = "";
 
   constructor(
@@ -21,6 +22,7 @@ export class ASTNode {
     readonly tag: string | null,
   ) {
     this.attributes = {};
+    this.escaped_attributes = {};
     this.children = [];
   }
 
@@ -39,6 +41,13 @@ export class ASTNode {
 
   attr_val(val: string) {
     this.attributes[this.attr_name] = val;
+    this.attr_name = "";
+
+    return this;
+  }
+
+  esc_val(val: string) {
+    this.escaped_attributes[this.attr_name] = val;
     this.attr_name = "";
 
     return this;
@@ -98,6 +107,16 @@ export const ast = (input: LexToken[]): (ASTNode | string)[] => {
 
   input.forEach((token, i) => {
     const last_token = input[i - 1]!;
+    if (token.type === Tokens.LCurl) {
+      opened_curly_brackets = true;
+
+      return;
+    }
+    if (token.type === Tokens.RCurl) {
+      opened_curly_brackets = false;
+      return;
+    }
+
     if (token.type === Tokens.Lt) {
       opened_tag_brackets = true;
       return;
@@ -137,7 +156,7 @@ export const ast = (input: LexToken[]): (ASTNode | string)[] => {
     ) {
       if (in_closing_tag) return;
       if (opened_curly_brackets) {
-        current_node.attr_val(token.content);
+        current_node.esc_val(token.content);
       } else if (opened_tag_brackets) {
         current_node.attr_val(token.content);
       } else {

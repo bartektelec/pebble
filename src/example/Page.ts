@@ -3,7 +3,7 @@ import Card from "./Card";
 
 const SecretButton = (props: { min: number; max: number }) => {
   const handle = () => {
-    alert("hello");
+    alert(123);
   };
 
   return component(
@@ -11,7 +11,7 @@ const SecretButton = (props: { min: number; max: number }) => {
       class="sec-button"
       onclick={handle}
     >
-      This is other button ${props.min} - ${props.max}
+      This is other button {props.min} - ${props.max}
     </button>`,
     { handle },
   );

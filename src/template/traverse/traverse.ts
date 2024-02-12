@@ -42,6 +42,12 @@ const mapNode = (
 ): ASTChildNode => {
   if (typeof node === "string") return node;
   const mapTo = mappers[node.tag!];
+  for (let key in node.escaped_attributes) {
+    const v = node.escaped_attributes[key]!;
+    const n = mappers[v]!;
+    node.attr(key);
+    node.attr_val(n);
+  }
   if (mapTo) {
     return `<!--${node.tag}-->${mapTo(node.attributes)}`;
   }
