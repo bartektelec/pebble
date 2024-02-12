@@ -9,7 +9,7 @@ const get = <T extends HTMLElement>(x: string) =>
 const { $signal, $effect, $computed } = ctx();
 
 // render parsed template
-document.body.innerHTML = Page.toString();
+document.body.innerHTML = Page().toString();
 
 // GRAB REFERENCES TO HTML OBJECTS, TODO: DO THIS IN TEMPLATING
 const counterOutput = get(`[data-appid="abcd"]`)!;

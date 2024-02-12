@@ -8,7 +8,10 @@ import { ASTChildNode, ASTNode } from "../ast/ast";
 
 export const traverse = (
   node: ASTChildNode[],
-  components: Record<string, ASTChildNode[]>,
+  components: Record<
+    string,
+    (props: Record<string, string>) => ASTChildNode[]
+  >,
 ): ASTChildNode[] => {
   return node
     .map((x) => traverseRecurrsive(x, components))
@@ -17,8 +20,11 @@ export const traverse = (
 
 export const traverseRecurrsive = (
   node: ASTChildNode,
-  components: Record<string, ASTChildNode[]>,
-) => {
+  components: Record<
+    string,
+    (props: Record<string, string>) => ASTChildNode[]
+  >,
+): ASTChildNode => {
   if (typeof node === "string") return node;
 
   node.children = node.children
@@ -29,13 +35,16 @@ export const traverseRecurrsive = (
 
 const mapNode = (
   node: ASTChildNode,
-  mappers: Record<string, ASTChildNode[]>,
-): ASTChildNode[] => {
-  if (typeof node === "string") return [node];
+  mappers: Record<
+    string,
+    (params: Record<string, string>) => ASTChildNode[]
+  >,
+): ASTChildNode => {
+  if (typeof node === "string") return node;
   const mapTo = mappers[node.tag!];
   if (mapTo) {
-    return [`<!-- ${node.tag} -->`, ...mapTo];
+    return `<!--${node.tag}-->${mapTo(node.attributes)}`;
   }
 
-  return [node];
+  return node;
 };
