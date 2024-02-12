@@ -33,6 +33,7 @@ export const lexer = (input: string): LexToken[] => {
   let in_tag_braces = false;
   let in_closing_tag = false;
   let in_script_or_style_tag: "script" | "style" | null = null;
+  let in_curly_braces = false;
 
   const next_char = () => {
     if (finished()) return;
@@ -68,13 +69,13 @@ export const lexer = (input: string): LexToken[] => {
     return input.slice(from + 1, pos);
   };
 
-  const read_text_node = () => {
+  const read_text_node = (until: string = "<") => {
     let from = pos;
     if (finished()) return "";
 
     next_char();
 
-    while (!finished() && get_ch() !== "<") {
+    while (!finished() && get_ch() !== until) {
       next_char();
     }
 
@@ -162,7 +163,7 @@ export const lexer = (input: string): LexToken[] => {
       in_closing_tag = true;
     if (token.type === Tokens.Gt && in_closing_tag)
       in_closing_tag = false;
-    if (in_tag_braces && is_letter(ch)) {
+    if (in_tag_braces && is_letter(ch) && !in_curly_braces) {
       token.type = Tokens.Ident;
       token.content = read_ident();
     }
@@ -191,6 +192,19 @@ export const lexer = (input: string): LexToken[] => {
 
       // skip if empty text node
       if (!token.content.trim()) return;
+    }
+
+    if (token.type === Tokens.LCurl) {
+      in_curly_braces = true;
+    }
+
+    if (token.type === Tokens.RCurl) {
+      in_curly_braces = false;
+    }
+
+    if (token.type === Tokens.Illegal && in_curly_braces) {
+      token.type = Tokens.Text;
+      token.content = read_text_node("}");
     }
 
     if (

@@ -93,6 +93,7 @@ export class ASTNode {
 export const ast = (input: LexToken[]): (ASTNode | string)[] => {
   let current_node = new ASTNode(null, null);
   let opened_tag_brackets = false;
+  let opened_curly_brackets = false;
   let in_closing_tag = false;
 
   input.forEach((token, i) => {
@@ -134,7 +135,10 @@ export const ast = (input: LexToken[]): (ASTNode | string)[] => {
       token.type === Tokens.String ||
       token.type === Tokens.Text
     ) {
-      if (opened_tag_brackets && !in_closing_tag) {
+      if (in_closing_tag) return;
+      if (opened_curly_brackets) {
+        current_node.attr_val(token.content);
+      } else if (opened_tag_brackets) {
         current_node.attr_val(token.content);
       } else {
         current_node.text(token.content);

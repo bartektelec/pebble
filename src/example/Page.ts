@@ -1,12 +1,23 @@
 import { component, html } from "./helpers";
 import Card from "./Card";
 
-const SecretButton = (props: { min: number; max: number }) =>
-  component(
-    html`<button class="sec-button">
+const SecretButton = (props: { min: number; max: number }) => {
+  const handle = () => {
+    alert("hello");
+  };
+
+  return component(
+    `<button
+      class="sec-button"
+      onclick={handle}
+    >
       This is other button ${props.min} - ${props.max}
     </button>`,
+    { handle },
   );
+};
+
+console.log(SecretButton({ min: 0, max: 100 }));
 
 export default () =>
   component(
