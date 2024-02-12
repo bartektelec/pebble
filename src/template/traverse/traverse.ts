@@ -46,6 +46,7 @@ const mapNode = (
     const v = node.escaped_attributes[key]!;
     const n = mappers[v]!;
     node.attr(key);
+    // @ts-expect-error
     node.attr_val(n);
   }
   if (mapTo) {
