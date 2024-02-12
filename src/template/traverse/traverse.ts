@@ -34,7 +34,7 @@ const mapNode = (
   if (typeof node === "string") return [node];
   const mapTo = mappers[node.tag!];
   if (mapTo) {
-    return mapTo;
+    return [`<!-- ${node.tag} -->`, ...mapTo];
   }
 
   return [node];
